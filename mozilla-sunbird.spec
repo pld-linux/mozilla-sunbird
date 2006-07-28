@@ -10,8 +10,8 @@ Version:	0.3a2
 Release:	0.1
 License:	MPL/LGPL
 Group:		X11/Applications/Networking
-Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/calendar/sunbird/releases/%{version}/sunbird-%{version}.en-US.linux-i686.tar.bz2
-# Source0-md5:	59af4313b245737425ebea5476ea2452
+Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/calendar/sunbird/releases/%{version}/source/sunbird-%{version}-source.tar.bz2
+# Source0-md5:	7c7bb48d71e75828471eb7ae0187824c
 #Source1:	%{name}.desktop
 #Source2:	%{name}.sh
 # UPDATE or DROP?
