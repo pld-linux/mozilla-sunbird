@@ -12,23 +12,20 @@ License:	MPL/LGPL
 Group:		X11/Applications/Networking
 Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/calendar/sunbird/releases/%{version}/source/sunbird-%{version}-source.tar.bz2
 # Source0-md5:	7c7bb48d71e75828471eb7ae0187824c
-#Source1:	%{name}.desktop
-#Source2:	%{name}.sh
-# UPDATE or DROP?
-#PatchX:	%{name}-searchplugins.patch
 URL:		http://www.mozilla.org/projects/sunbird/
-%{?with_gnome:BuildRequires:	GConf2-devel >= 1.2.1}
+BuildRequires:	GConf2-devel >= 1.2.1
 BuildRequires:	automake
 BuildRequires:	cairo-devel >= 1.0.0
-%{?with_gnome:BuildRequires:	gnome-vfs2-devel >= 2.0}
+BuildRequires:	gnome-vfs2-devel >= 2.0
 BuildRequires:	gtk+2-devel >= 1:2.0.0
-BuildRequires:	heimdal-devel >= 0.7.1
-BuildRequires:	libIDL-devel >= 0.8.0
-%{?with_gnome:BuildRequires:	libgnome-devel >= 2.0}
-%{?with_gnome:BuildRequires:	libgnomeui-devel >= 2.2.0}
-BuildRequires:	libjpeg-devel >= 6b
-BuildRequires:	libpng-devel >= 1.2.7
-BuildRequires:	libstdc++-devel
+BuildRequires:	freetype-devel
+#BuildRequires:	heimdal-devel >= 0.7.1
+#BuildRequires:	libIDL-devel >= 0.8.0
+BuildRequires:	libgnome-devel >= 2.0
+BuildRequires:	libgnomeui-devel >= 2.2.0
+#BuildRequires:	libjpeg-devel >= 6b
+#BuildRequires:	libpng-devel >= 1.2.7
+#BuildRequires:	libstdc++-devel
 BuildRequires:	nspr-devel >= 1:4.6.1-2
 BuildRequires:	nss-devel >= 3.10.2
 BuildRequires:	pango-devel >= 1:1.6.0
@@ -45,12 +42,6 @@ Requires:	%{name}-lang-resources = %{version}
 Requires:	nspr >= 1:4.6.1-2
 Requires:	nss >= 3.10.2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
-
-%define		_firefoxdir	%{_libdir}/%{name}
-# mozilla and firefox provide their own versions
-%define		_noautoreqdep		libgkgfx.so libgtkembedmoz.so libgtkxtbin.so libjsj.so libmozjs.so libxpcom.so libxpcom_compat.so
-
-%define		specflags	-fno-strict-aliasing
 
 %description
 Mozilla Firefox is an open-source web browser, designed for standards
@@ -91,93 +82,12 @@ Anglojêzyczne zasoby dla przegl±darki Mozilla Firefox.
 
 %prep
 %setup -q -n mozilla
-#patch0 -p1
-#patch1 -p1
-#patch2 -p1
-#patch3 -p1
-#patch4 -p1
-
-sed -i 's/\(-lgss\)\(\W\)/\1disable\2/' configure
 
 %build
-rm -f .mozconfig
-export CFLAGS="%{rpmcflags} `%{_bindir}/pkg-config mozilla-nspr --cflags-only-I`"
-export CXXFLAGS="%{rpmcflags} `%{_bindir}/pkg-config mozilla-nspr --cflags-only-I`"
+%configure \
+	--enable-application=calendar
 
-cp -f %{_datadir}/automake/config.* build/autoconf
-cp -f %{_datadir}/automake/config.* nsprpub/build/autoconf
-cp -f %{_datadir}/automake/config.* directory/c-sdk/config/autoconf
-
-LIBIDL_CONFIG="%{_bindir}/libIDL-config-2"; export LIBIDL_CONFIG
-
-cat << EOF > .mozconfig
-. \$topsrcdir/browser/config/mozconfig
-
-export BUILD_OFFICIAL=1
-export MOZILLA_OFFICIAL=1
-mk_add_options BUILD_OFFICIAL=1
-mk_add_options MOZILLA_OFFICIAL=1
-
-ac_add_options --prefix=%{_prefix}
-ac_add_options --exec-prefix=%{_exec_prefix}
-ac_add_options --bindir=%{_bindir}
-ac_add_options --sbindir=%{_sbindir}
-ac_add_options --sysconfdir=%{_sysconfdir}
-ac_add_options --datadir=%{_datadir}
-ac_add_options --includedir=%{_includedir}
-ac_add_options --libdir=%{_libdir}
-ac_add_options --libexecdir=%{_libexecdir}
-ac_add_options --localstatedir=%{_localstatedir}
-ac_add_options --sharedstatedir=%{_sharedstatedir}
-ac_add_options --mandir=%{_mandir}
-ac_add_options --infodir=%{_infodir}
-ac_add_options --enable-optimize="%{rpmcflags}"
-%if %{?debug:1}0
-ac_add_options --enable-debug
-ac_add_options --enable-debug-modules
-%else
-ac_add_options --disable-debug
-ac_add_options --disable-debug-modules
-%endif
-%if %{with tests}
-ac_add_options --enable-tests
-%else
-ac_add_options --disable-tests
-%endif
-ac_add_options --disable-composer
-ac_add_options --disable-dtd-debug
-ac_add_options --disable-freetype2
-ac_add_options --disable-installer
-ac_add_options --disable-jsd
-ac_add_options --disable-ldap
-ac_add_options --disable-mailnews
-ac_add_options --disable-profilesharing
-ac_add_options --disable-xprint
-ac_add_options --enable-canvas
-ac_add_options --enable-crypto
-ac_add_options --enable-default-toolkit=gtk2
-ac_add_options --enable-mathml
-ac_add_options --enable-pango
-ac_add_options --enable-reorder
-ac_add_options --enable-single-profile
-ac_add_options --enable-strip
-ac_add_options --enable-strip-libs
-ac_add_options --enable-svg
-ac_add_options --enable-system-cairo
-ac_add_options --enable-xft
-ac_add_options --enable-xinerama
-ac_add_options --enable-xpctools
-ac_add_options --with-pthreads
-ac_add_options --with-system-jpeg
-ac_add_options --with-system-nspr
-ac_add_options --with-system-png
-ac_add_options --with-system-zlib
-ac_cv_visibility_pragma=no
-EOF
-
-%{__make} -j1 -f client.mk build \
-	CC="%{__cc}" \
-	CXX="%{__cxx}"
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
