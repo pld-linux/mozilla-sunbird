@@ -95,79 +95,8 @@ install -d \
 	$RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_libdir}{,extensions}} \
 	$RPM_BUILD_ROOT{%{_pixmapsdir},%{_desktopdir}} \
 	$RPM_BUILD_ROOT{%{_includedir}/%{name}/idl,%{_pkgconfigdir}}
-# extensions dir is needed (it can be empty)
 
-ln -s mozilla-firefox $RPM_BUILD_ROOT%{_bindir}/firefox
-
-%{__make} -C xpinstall/packager \
-	MOZ_PKG_APPNAME="mozilla-firefox" \
-	MOZILLA_BIN="\$(DIST)/bin/firefox-bin" \
-	EXCLUDE_NSPR_LIBS=1
-
-sed 's,@LIBDIR@,%{_libdir},' %{SOURCE2} > $RPM_BUILD_ROOT%{_bindir}/mozilla-firefox
-
-tar -xvz -C $RPM_BUILD_ROOT%{_libdir} -f dist/mozilla-firefox-*linux*.tar.gz
-
-install other-licenses/branding/firefox/content/icon64.png $RPM_BUILD_ROOT%{_pixmapsdir}/mozilla-firefox.png
-#install -m0644 bookmarks.html $RPM_BUILD_ROOT%{_firefoxdir}/defaults/profile/
-#install -m0644 bookmarks.html $RPM_BUILD_ROOT%{_firefoxdir}/defaults/profile/US/
-
-install %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
-
-rm -rf US classic comm embed-sample en-{US,mac,unix,win} modern pipnss pippki
-rm -f en-win.jar en-mac.jar embed-sample.jar modern.jar
-
-# header/developement files
-cp -rfL dist/include/*	$RPM_BUILD_ROOT%{_includedir}/%{name}
-cp -rfL dist/idl/*	$RPM_BUILD_ROOT%{_includedir}/%{name}/idl
-
-install dist/bin/regxpcom $RPM_BUILD_ROOT%{_bindir}
-install dist/bin/xpidl $RPM_BUILD_ROOT%{_bindir}
-install dist/bin/xpt_dump $RPM_BUILD_ROOT%{_bindir}
-install dist/bin/xpt_link $RPM_BUILD_ROOT%{_bindir}
-
-ln -sf %{_includedir}/mozilla-firefox/necko/nsIURI.h \
-	$RPM_BUILD_ROOT%{_includedir}/mozilla-firefox/nsIURI.h
-
-# CA certificates
-ln -s %{_libdir}/libnssckbi.so $RPM_BUILD_ROOT%{_firefoxdir}/libnssckbi.so
-
-# pkgconfig files
-for f in build/unix/*.pc ; do
-        sed -e 's/firefox-%{version}/mozilla-firefox/' $f \
-	    > $RPM_BUILD_ROOT%{_pkgconfigdir}/$(basename $f)
-done
-
-# already provided by standalone packages
-rm -f $RPM_BUILD_ROOT%{_pkgconfigdir}/firefox-{nss,nspr}.pc
-
-sed -i -e 's#firefox-nspr =.*#mozilla-nspr#g' -e 's#irefox-nss =.*#mozilla-nss#g' \
-	$RPM_BUILD_ROOT%{_pkgconfigdir}/*.pc
-
-# includedir/dom CFLAGS
-sed -i -e '/Cflags:/{/{includedir}\/dom/!s,$, -I${includedir}/dom,}' \
-	$RPM_BUILD_ROOT%{_pkgconfigdir}/firefox-plugin.pc
-
-cat << 'EOF' > $RPM_BUILD_ROOT%{_sbindir}/firefox-chrome+xpcom-generate
-#!/bin/sh
-umask 022
-rm -f %{_firefoxdir}/chrome/{chrome.rdf,overlayinfo/*/*/*.rdf}
-rm -f %{_firefoxdir}/components/{compreg,xpti}.dat
-MOZILLA_FIVE_HOME=%{_firefoxdir}
-export MOZILLA_FIVE_HOME
-
-# PATH
-PATH=%{_firefoxdir}:$PATH
-export PATH
-
-# added /usr/lib : don't load your local library
-LD_LIBRARY_PATH=%{_firefoxdir}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
-export LD_LIBRARY_PATH
-
-unset TMPDIR TMP || :
-MOZILLA_FIVE_HOME=%{_firefoxdir} %{_firefoxdir}/regxpcom
-MOZILLA_FIVE_HOME=%{_firefoxdir} %{_firefoxdir}/firefox -register
-EOF
+%{__make} DESTDIR=$RPM_BUILD_ROOT install
 
 %clean
 rm -rf $RPM_BUILD_ROOT
