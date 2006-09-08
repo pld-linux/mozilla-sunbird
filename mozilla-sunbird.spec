@@ -84,6 +84,8 @@ Anglojêzyczne zasoby dla przegl±darki Mozilla Firefox.
 %setup -q -n mozilla
 
 %build
+%{__aclocal}
+%{__autoconf}
 %configure \
 	--enable-application=calendar
 
