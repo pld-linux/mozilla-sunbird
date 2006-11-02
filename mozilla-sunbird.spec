@@ -1,3 +1,4 @@
+# TODO: kill -O overriding our optflags
 #
 # Conditional build:
 %bcond_with	tests	# enable tests (whatever they check)
