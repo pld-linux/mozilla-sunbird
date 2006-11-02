@@ -6,12 +6,12 @@
 Summary:	Mozilla Sunbird - standalone calendar application
 Summary(pl):	Mozilla Sunbird - samodzielny kalendarz
 Name:		mozilla-sunbird
-Version:	0.3a2
+Version:	0.3
 Release:	0.1
 License:	MPL/LGPL
 Group:		X11/Applications/Networking
-Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/calendar/sunbird/releases/%{version}/source/sunbird-%{version}-source.tar.bz2
-# Source0-md5:	7c7bb48d71e75828471eb7ae0187824c
+Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/calendar/sunbird/releases/%{version}/source/sunbird-%{version}.source.tar.bz2
+# Source0-md5:	5579069a44e382bb963e3bbf6897a366
 URL:		http://www.mozilla.org/projects/sunbird/
 BuildRequires:	GConf2-devel >= 1.2.1
 BuildRequires:	automake
@@ -26,8 +26,8 @@ BuildRequires:	libgnomeui-devel >= 2.2.0
 #BuildRequires:	libjpeg-devel >= 6b
 #BuildRequires:	libpng-devel >= 1.2.7
 #BuildRequires:	libstdc++-devel
-BuildRequires:	nspr-devel >= 1:4.6.1-2
-BuildRequires:	nss-devel >= 3.10.2
+BuildRequires:	nspr-devel >= 1:4.6.3
+BuildRequires:	nss-devel >= 1:3.11.3
 BuildRequires:	pango-devel >= 1:1.6.0
 BuildRequires:	perl-modules >= 5.004
 BuildRequires:	pkgconfig
@@ -39,8 +39,8 @@ BuildRequires:	xorg-lib-libXt-devel
 BuildRequires:	zip
 BuildRequires:	zlib-devel >= 1.2.3
 Requires:	%{name}-lang-resources = %{version}
-Requires:	nspr >= 1:4.6.1-2
-Requires:	nss >= 3.10.2
+Requires:	nspr >= 1:4.6.3
+Requires:	nss >= 1:3.11.3
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sunbirddir	%{_libdir}/mozilla-sunbird
@@ -58,7 +58,7 @@ Summary:	Headers for developing programs that will use Mozilla Sunbird
 Summary(pl):	Mozilla Sunbird - pliki nag³ówkowe
 Group:		X11/Development/Libraries
 Requires:	%{name} = %{epoch}:%{version}-%{release}
-Requires:	nspr-devel >= 1:4.6.1-2
+Requires:	nspr-devel >= 1:4.6.3
 Obsoletes:	mozilla-devel
 
 %description devel
