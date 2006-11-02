@@ -17,9 +17,9 @@ URL:		http://www.mozilla.org/projects/sunbird/
 BuildRequires:	GConf2-devel >= 1.2.1
 BuildRequires:	automake
 BuildRequires:	cairo-devel >= 1.0.0
+BuildRequires:	freetype-devel
 BuildRequires:	gnome-vfs2-devel >= 2.0
 BuildRequires:	gtk+2-devel >= 1:2.0.0
-BuildRequires:	freetype-devel
 #BuildRequires:	heimdal-devel >= 0.7.1
 #BuildRequires:	libIDL-devel >= 0.8.0
 BuildRequires:	libgnome-devel >= 2.0
@@ -28,7 +28,7 @@ BuildRequires:	libgnomeui-devel >= 2.2.0
 #BuildRequires:	libpng-devel >= 1.2.7
 #BuildRequires:	libstdc++-devel
 BuildRequires:	nspr-devel >= 1:4.6.3
-BuildRequires:	nss-devel >= 1:3.11.3
+BuildRequires:	nss-devel >= 1:3.11.3-3
 BuildRequires:	pango-devel >= 1:1.6.0
 BuildRequires:	perl-modules >= 5.004
 BuildRequires:	pkgconfig
