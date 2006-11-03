@@ -16,17 +16,16 @@ Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/calendar/sunbird/releases/%{versi
 URL:		http://www.mozilla.org/projects/sunbird/
 BuildRequires:	GConf2-devel >= 1.2.1
 BuildRequires:	automake
-BuildRequires:	cairo-devel >= 1.0.0
+BuildRequires:	cairo-devel >= 1.2.0
 BuildRequires:	freetype-devel
 BuildRequires:	gnome-vfs2-devel >= 2.0
 BuildRequires:	gtk+2-devel >= 1:2.0.0
-#BuildRequires:	heimdal-devel >= 0.7.1
-#BuildRequires:	libIDL-devel >= 0.8.0
+BuildRequires:	libIDL-devel >= 0.8.0
 BuildRequires:	libgnome-devel >= 2.0
 BuildRequires:	libgnomeui-devel >= 2.2.0
-#BuildRequires:	libjpeg-devel >= 6b
-#BuildRequires:	libpng-devel >= 1.2.7
-#BuildRequires:	libstdc++-devel
+BuildRequires:	libjpeg-devel >= 6b
+BuildRequires:	libpng-devel >= 1.2.7
+BuildRequires:	libstdc++-devel
 BuildRequires:	nspr-devel >= 1:4.6.3
 BuildRequires:	nss-devel >= 1:3.11.3-3
 BuildRequires:	pango-devel >= 1:1.6.0
@@ -40,6 +39,7 @@ BuildRequires:	xorg-lib-libXt-devel
 BuildRequires:	zip
 BuildRequires:	zlib-devel >= 1.2.3
 Requires:	%{name}-lang-resources = %{version}
+Requires:	cairo >= 1.2.0
 Requires:	nspr >= 1:4.6.3
 Requires:	nss >= 1:3.11.3
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -68,59 +68,101 @@ Mozilla Sunbird development package.
 %description devel -l pl
 Pliki nag³ówkowe kalendarza Mozilla Sunbird.
 
-%package lang-en
-Summary:	English resources for Mozilla Sunbird
-Summary(pl):	Anglojêzyczne zasoby dla kalendarza Mozilla Sunbird
-Group:		X11/Applications/Networking
-Requires(post,postun):	%{name} = %{version}-%{release}
-Requires(post,postun):	textutils
-Requires:	%{name} = %{version}-%{release}
-Provides:	%{name}-lang-resources = %{version}-%{release}
-
-%description lang-en
-English resources for Mozilla Sunbird.
-
-%description lang-en -l pl
-Anglojêzyczne zasoby dla kalendarza Mozilla Sunbird.
-
 %prep
-%setup -q -n mozilla
+%setup -q -c
 
 %build
-%configure2_13 \
-	--enable-application=calendar
+cd mozilla
 
-%{__make}
+cat << 'EOF' > .mozconfig
+# Options for 'configure' (same as command-line options).
+ac_add_options --prefix=%{_prefix}
+ac_add_options --exec-prefix=%{_exec_prefix}
+ac_add_options --bindir=%{_bindir}
+ac_add_options --sbindir=%{_sbindir}
+ac_add_options --sysconfdir=%{_sysconfdir}
+ac_add_options --datadir=%{_datadir}
+ac_add_options --includedir=%{_includedir}
+ac_add_options --libdir=%{_libdir}
+ac_add_options --libexecdir=%{_libexecdir}
+ac_add_options --localstatedir=%{_localstatedir}
+ac_add_options --sharedstatedir=%{_sharedstatedir}
+ac_add_options --mandir=%{_mandir}
+ac_add_options --infodir=%{_infodir}
+%if %{?debug:1}0
+ac_add_options --enable-debug
+ac_add_options --enable-debug-modules
+ac_add_options --disable-optimize
+%else
+ac_add_options --disable-debug
+ac_add_options --disable-debug-modules
+ac_add_options --enable-optimize="%{rpmcflags}"
+%endif
+%if %{with tests}
+ac_add_options --enable-tests
+%else
+ac_add_options --disable-tests
+%endif
+mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/obj-@CONFIG_GUESS@
+ac_add_options --disable-freetype2
+ac_add_options --disable-logging
+ac_add_options --disable-old-abi-compat-wrappers
+ac_add_options --enable-application=calendar
+ac_add_options --enable-default-toolkit=gtk2
+ac_add_options --enable-elf-dynstr-gc
+ac_add_options --enable-image-decoders=all
+ac_add_options --enable-image-encoders=all
+ac_add_options --enable-ipcd
+ac_add_options --enable-ldap-experimental
+ac_add_options --enable-native-uconv
+ac_add_options --enable-safe-browsing
+ac_add_options --enable-storage
+ac_add_options --enable-system-cairo
+ac_add_options --enable-url-classifier
+ac_add_options --enable-xft
+ac_add_options --with-default-mozilla-five-home=%{_sunbirddir}
+ac_add_options --with-distribution-id=org.pld-linux
+ac_add_options --with-java-bin-path=/usr/bin
+ac_add_options --with-java-include-path=/usr/include
+ac_add_options --with-qtdir=/usr
+ac_add_options --with-system-jpeg
+ac_add_options --with-system-nspr
+ac_add_options --with-system-nss
+ac_add_options --with-system-png
+ac_add_options --with-system-zlib
+EOF
+
+%{__make} -j1 -f client.mk build \
+	CC="%{__cc}" \
+	CXX="%{__cxx}"
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d \
-	$RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_libdir}{,extensions}} \
-	$RPM_BUILD_ROOT{%{_pixmapsdir},%{_desktopdir}} \
-	$RPM_BUILD_ROOT{%{_includedir}/%{name}/idl,%{_pkgconfigdir}}
+#install -d \
+#	$RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_libdir}} \
+#	$RPM_BUILD_ROOT{%{_pixmapsdir},%{_desktopdir}} \
+#	$RPM_BUILD_ROOT{%{_pkgconfigdir}}
 
-%{__make} install \
+%{__make} -C mozilla install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post
-%{_sbindir}/firefox-chrome+xpcom-generate
-
-%postun
-if [ "$1" = "0" ]; then
-	rm -rf %{_sunbirddir}/chrome/overlayinfo
-	rm -f  %{_sunbirddir}/chrome/*.rdf
-	rm -rf %{_sunbirddir}/components
-	rm -rf %{_sunbirddir}/extensions
-fi
+#%post
+#%{_sbindir}/firefox-chrome+xpcom-generate
+#
+#%postun
+#if [ "$1" = "0" ]; then
+#	rm -rf %{_sunbirddir}/chrome/overlayinfo
+#	rm -f  %{_sunbirddir}/chrome/*.rdf
+#	rm -rf %{_sunbirddir}/components
+#	rm -rf %{_sunbirddir}/extensions
+#fi
 
 %files
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/mozilla*
-%attr(755,root,root) %{_bindir}/firefox
-%attr(755,root,root) %{_sbindir}/*
+%attr(755,root,root) %{_bindir}/sunbird
 %dir %{_sunbirddir}
 %{_sunbirddir}/res
 %dir %{_sunbirddir}/components
@@ -134,39 +176,24 @@ fi
 %{_sunbirddir}/defaults
 %{_sunbirddir}/greprefs
 %dir %{_sunbirddir}/extensions
-%dir %{_sunbirddir}/init.d
 %attr(755,root,root) %{_sunbirddir}/*.so
 %attr(755,root,root) %{_sunbirddir}/*.sh
 %attr(755,root,root) %{_sunbirddir}/m*
 %attr(755,root,root) %{_sunbirddir}/f*
 %attr(755,root,root) %{_sunbirddir}/reg*
 %attr(755,root,root) %{_sunbirddir}/x*
-%{_pixmapsdir}/*
-%{_desktopdir}/*
+%{_datadir}/idl/sunbird-%{version}
+#%{_pixmapsdir}/*
+#%{_desktopdir}/*
 
 %dir %{_sunbirddir}/chrome
 %{_sunbirddir}/chrome/*.jar
 %{_sunbirddir}/chrome/*.manifest
-# -chat subpackage?
-#%{_sunbirddir}/chrome/chatzilla.jar
-#%{_sunbirddir}/chrome/content-packs.jar
 %dir %{_sunbirddir}/chrome/icons
 %{_sunbirddir}/chrome/icons/default
 
-# -dom-inspector subpackage?
-%dir %{_sunbirddir}/extensions/inspector@mozilla.org
-%{_sunbirddir}/extensions/inspector@mozilla.org/*
-
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/regxpcom
-%attr(755,root,root) %{_bindir}/xpidl
-%attr(755,root,root) %{_bindir}/xpt_dump
-%attr(755,root,root) %{_bindir}/xpt_link
-%{_includedir}/%{name}
-%{_pkgconfigdir}/*
-
-%files lang-en
-%defattr(644,root,root,755)
-%{_sunbirddir}/chrome/en-US.jar
-%{_sunbirddir}/chrome/en-US.manifest
+%attr(755,root,root) %{_bindir}/sunbird-config
+%{_includedir}/sunbird-%{version}
+%{_pkgconfigdir}/sunbird-*.pc
