@@ -5,7 +5,7 @@
 %bcond_without	gnome	# disable all GNOME components (gnomevfs, gnome, gnomeui)
 #
 Summary:	Mozilla Sunbird - standalone calendar application
-Summary(pl):	Mozilla Sunbird - samodzielny kalendarz
+Summary(pl.UTF-8):   Mozilla Sunbird - samodzielny kalendarz
 Name:		mozilla-sunbird
 Version:	0.3
 Release:	0.1
@@ -50,13 +50,13 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 The Sunbird Project is a cross platform standalone calendar
 application based on Mozilla's XUL user interface language.
 
-%description -l pl
-Projekt Sunbird to wieloplatformowa aplikacja bed±ca samodzielnym
-kalendarzem, oparta na jÍzyku interfejsu uøytkownika XUL.
+%description -l pl.UTF-8
+Projekt Sunbird to wieloplatformowa aplikacja bedƒÖca samodzielnym
+kalendarzem, oparta na jƒôzyku interfejsu u≈ºytkownika XUL.
 
 %package devel
 Summary:	Headers for developing programs that will use Mozilla Sunbird
-Summary(pl):	Mozilla Sunbird - pliki nag≥Ûwkowe
+Summary(pl.UTF-8):   Mozilla Sunbird - pliki nag≈Ç√≥wkowe
 Group:		X11/Development/Libraries
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 Requires:	nspr-devel >= 1:4.6.3
@@ -65,8 +65,8 @@ Obsoletes:	mozilla-devel
 %description devel
 Mozilla Sunbird development package.
 
-%description devel -l pl
-Pliki nag≥Ûwkowe kalendarza Mozilla Sunbird.
+%description devel -l pl.UTF-8
+Pliki nag≈Ç√≥wkowe kalendarza Mozilla Sunbird.
 
 %prep
 %setup -q -c
