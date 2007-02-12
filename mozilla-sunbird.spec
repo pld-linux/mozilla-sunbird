@@ -5,7 +5,7 @@
 %bcond_without	gnome	# disable all GNOME components (gnomevfs, gnome, gnomeui)
 #
 Summary:	Mozilla Sunbird - standalone calendar application
-Summary(pl.UTF-8):   Mozilla Sunbird - samodzielny kalendarz
+Summary(pl.UTF-8):	Mozilla Sunbird - samodzielny kalendarz
 Name:		mozilla-sunbird
 Version:	0.3
 Release:	0.1
@@ -56,7 +56,7 @@ kalendarzem, oparta na języku interfejsu użytkownika XUL.
 
 %package devel
 Summary:	Headers for developing programs that will use Mozilla Sunbird
-Summary(pl.UTF-8):   Mozilla Sunbird - pliki nagłówkowe
+Summary(pl.UTF-8):	Mozilla Sunbird - pliki nagłówkowe
 Group:		X11/Development/Libraries
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 Requires:	nspr-devel >= 1:4.6.3
