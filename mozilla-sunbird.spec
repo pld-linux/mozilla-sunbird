@@ -7,12 +7,12 @@
 Summary:	Mozilla Sunbird - standalone calendar application
 Summary(pl.UTF-8):	Mozilla Sunbird - samodzielny kalendarz
 Name:		mozilla-sunbird
-Version:	0.3
+Version:	0.5
 Release:	0.1
 License:	MPL/LGPL
 Group:		X11/Applications/Networking
-Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/calendar/sunbird/releases/%{version}/source/sunbird-%{version}.source.tar.bz2
-# Source0-md5:	5579069a44e382bb963e3bbf6897a366
+Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/calendar/sunbird/releases/%{version}/source/lightning-sunbird-%{version}-source.tar.bz2
+# Source0-md5:	77b2f84c7ff099934ef5b48a7c61cb24
 URL:		http://www.mozilla.org/projects/sunbird/
 BuildRequires:	GConf2-devel >= 1.2.1
 BuildRequires:	automake
