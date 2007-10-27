@@ -8,13 +8,14 @@ Summary:	Mozilla Sunbird - standalone calendar application
 Summary(pl.UTF-8):	Mozilla Sunbird - samodzielny kalendarz
 Name:		mozilla-sunbird
 Version:	0.7
-Release:	0.4
+Release:	0.5
 License:	MPL/LGPL
 Group:		X11/Applications/Networking
 #Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/calendar/sunbird/releases/%{version}/source/lightning-sunbird-%{version}-source.tar.bz2
 Source0:	lightning-sunbird-%{version}-20071027-source.tar.bz2
 # Source0-md5:	7bc573958c75630962a121d7ed12eb6f
 Source1:	%{name}.sh
+Source2:	%{name}.desktop
 Patch0:		mozilla-install.patch
 URL:		http://www.mozilla.org/projects/sunbird/
 BuildRequires:	GConf2-devel >= 1.2.1
@@ -41,7 +42,6 @@ BuildRequires:	xorg-lib-libXp-devel
 BuildRequires:	xorg-lib-libXt-devel
 BuildRequires:	zip
 BuildRequires:	zlib-devel >= 1.2.3
-#Requires:	%{name}-lang-resources = %{version}
 Requires:	cairo >= 1.2.0
 Requires:	nspr >= 1:4.6.3
 Requires:	nss >= 1:3.11.3
@@ -137,11 +137,13 @@ EOF
 
 %install
 rm -rf $RPM_BUILD_ROOT
+cd mozilla
 install -d \
 	$RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_libdir}} \
+	$RPM_BUILD_ROOT{%{_pixmapsdir},%{_desktopdir}} \
 	$RPM_BUILD_ROOT%{_datadir}/%{name}
 
-%{__make} -C mozilla/obj-%{_target_cpu}/xpinstall/packager stage-package \
+%{__make} -C obj-%{_target_cpu}/xpinstall/packager stage-package \
 	DESTDIR=$RPM_BUILD_ROOT \
 	MOZ_PKG_APPDIR=%{_libdir}/%{name} \
 	PKG_SKIP_STRIP=1
@@ -163,7 +165,12 @@ ln -s ../../share/%{name}/js $RPM_BUILD_ROOT%{_libdir}/%{name}/js
 ln -s ../../share/%{name}/res $RPM_BUILD_ROOT%{_libdir}/%{name}/res
 
 sed 's,@LIBDIR@,%{_libdir},' %{SOURCE1} > $RPM_BUILD_ROOT%{_bindir}/%{name}
-ln -s %{name} $RPM_BUILD_ROOT%{_bindir}/$(name=%{name}; echo ${name#mozilla-})
+ln -s %{name} $RPM_BUILD_ROOT%{_bindir}/sunbird
+cp -a %{SOURCE2} $RPM_BUILD_ROOT%{_desktopdir}/%{name}.desktop
+cp -a calendar/sunbird/app/mozicon128.png $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
+
+# it will complain on startup about bad chrome install otherwise
+touch $RPM_BUILD_ROOT%{_datadir}/%{name}/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}/chrome.manifest
 
 rm -f $RPM_BUILD_ROOT%{_libdir}/%{name}/dependentlibs.list
 
@@ -214,8 +221,8 @@ exit 0
 %{_datadir}/%{name}/extensions/{972ce4c6-7e08-4474-a285-3208198ce6fd}
 %{_datadir}/%{name}/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}
 
-#%{_pixmapsdir}/*
-#%{_desktopdir}/*
+%{_pixmapsdir}/%{name}.png
+%{_desktopdir}/%{name}.desktop
 
 # symlinks
 %{_libdir}/%{name}/chrome
