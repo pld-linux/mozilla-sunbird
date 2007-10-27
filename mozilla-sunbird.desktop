@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Sunbird Community Edition
 Comment=Calendar and Scheduling Program
+GenericName=Personal Organizer
 Exec=mozilla-sunbird
 Icon=mozilla-sunbird
 Terminal=false
