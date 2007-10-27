@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Sunbird Community Edition
+Comment=Calendar and Scheduling Program
+Exec=mozilla-sunbird
+Icon=mozilla-sunbird
+Terminal=false
+Type=Application
+Categories=GTK;Network;Office;Calendar;
+Encoding=UTF-8
+# vi: encoding=utf-8
