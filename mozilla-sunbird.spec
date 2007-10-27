@@ -7,12 +7,14 @@
 Summary:	Mozilla Sunbird - standalone calendar application
 Summary(pl.UTF-8):	Mozilla Sunbird - samodzielny kalendarz
 Name:		mozilla-sunbird
-Version:	0.5
+Version:	0.7
 Release:	0.1
 License:	MPL/LGPL
 Group:		X11/Applications/Networking
 Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/calendar/sunbird/releases/%{version}/source/lightning-sunbird-%{version}-source.tar.bz2
-# Source0-md5:	77b2f84c7ff099934ef5b48a7c61cb24
+# Source0-md5:	7bc573958c75630962a121d7ed12eb6f
+Source0:	lightning-sunbird-%{version}-20071027-source.tar.bz2
+# Source0-md5:	7bc573958c75630962a121d7ed12eb6f
 URL:		http://www.mozilla.org/projects/sunbird/
 BuildRequires:	GConf2-devel >= 1.2.1
 BuildRequires:	automake
@@ -138,12 +140,7 @@ EOF
 
 %install
 rm -rf $RPM_BUILD_ROOT
-#install -d \
-#	$RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_libdir}} \
-#	$RPM_BUILD_ROOT{%{_pixmapsdir},%{_desktopdir}} \
-#	$RPM_BUILD_ROOT{%{_pkgconfigdir}}
-
-%{__make} -C mozilla install \
+%{__make} -C mozilla -f client.mk install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 %clean
