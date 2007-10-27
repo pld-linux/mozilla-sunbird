@@ -8,7 +8,7 @@ Summary:	Mozilla Sunbird - standalone calendar application
 Summary(pl.UTF-8):	Mozilla Sunbird - samodzielny kalendarz
 Name:		mozilla-sunbird
 Version:	0.7
-Release:	0.1
+Release:	0.2
 License:	MPL/LGPL
 Group:		X11/Applications/Networking
 #Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/calendar/sunbird/releases/%{version}/source/lightning-sunbird-%{version}-source.tar.bz2
@@ -45,6 +45,16 @@ Requires:	cairo >= 1.2.0
 Requires:	nspr >= 1:4.6.3
 Requires:	nss >= 1:3.11.3
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+# firefox/thunderbird/seamonkey/sunbird provide their own versions
+%define		_noautoreqdep		libgkgfx.so libgtkxtbin.so libxpcom_compat.so libxpcom_core.so
+%define		_noautoprovfiles	%{_libdir}/%{name}/components
+# we don't want these to satisfy xulrunner-devel
+%define		_noautoprov		libgtkembedmoz.so libmozjs.so libxpcom.so
+# and as we don't provide them, don't require either
+%define		_noautoreq		libgtkembedmoz.so libmozjs.so libxpcom.so
+
+%define		specflags	-fno-strict-aliasing
 
 %description
 The Sunbird Project is a cross platform standalone calendar
