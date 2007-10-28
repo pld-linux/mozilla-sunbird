@@ -1,7 +1,5 @@
 # TODO
 # - kill -O overriding our optflags
-# - in js this is undefined: Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
-#   which means can't import .ics files
 #
 # Conditional build:
 %bcond_with	tests	# enable tests (whatever they check)
@@ -18,7 +16,7 @@ Summary:	Mozilla Sunbird - standalone calendar application
 Summary(pl.UTF-8):	Mozilla Sunbird - samodzielny kalendarz
 Name:		mozilla-sunbird
 Version:	0.7
-Release:	0.6
+Release:	0.7
 License:	MPL/LGPL
 Group:		X11/Applications/Networking
 #Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/calendar/sunbird/releases/%{version}/source/lightning-sunbird-%{version}-source.tar.bz2
@@ -58,12 +56,12 @@ Requires:	nss >= 1:3.11.3
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 # firefox/thunderbird/seamonkey/sunbird provide their own versions
-%define		_noautoreqdep		libgkgfx.so libgtkxtbin.so libxpcom_compat.so libxpcom_core.so
+%define		_noautoreqdep		libgkgfx.so libgtkxtbin.so libxpcom_compat.so libxpcom_core.so libgfxpsshar.so libxpistub.so
 %define		_noautoprovfiles	%{_libdir}/%{name}/components
 # we don't want these to satisfy xulrunner-devel
 %define		_noautoprov		libgtkembedmoz.so libmozjs.so libxpcom.so
 # and as we don't provide them, don't require either
-%define		_noautoreq		libgtkembedmoz.so libmozjs.so libxpcom.so
+%define		_noautoreq		%{_noautoprov}
 
 %define		specflags	-fno-strict-aliasing
 
@@ -136,7 +134,6 @@ ac_add_options --enable-application=calendar
 ac_add_options --enable-default-toolkit=gtk2
 ac_add_options --enable-ipcd
 ac_add_options --enable-ldap-experimental
-ac_add_options --enable-native-uconv
 ac_add_options --enable-storage
 ac_add_options --enable-system-cairo
 ac_add_options --enable-xft
