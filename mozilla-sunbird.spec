@@ -1,14 +1,24 @@
-# TODO: kill -O overriding our optflags
+# TODO
+# - kill -O overriding our optflags
+# - in js this is undefined: Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
+#   which means can't import .ics files
 #
 # Conditional build:
 %bcond_with	tests	# enable tests (whatever they check)
-%bcond_without	gnome	# disable all GNOME components (gnomevfs, gnome, gnomeui)
+%bcond_without	gnomeui		# disable gnomeui support
+%bcond_without	gnomevfs	# disable GNOME comp. (gconf+libgnome+gnomevfs) and gnomevfs ext.
+%bcond_without	gnome		# disable all GNOME components (gnome+gnomeui+gnomevfs)
+#
+%if %{without gnome}
+%undefine	with_gnomeui
+%undefine	with_gnomevfs
+%endif
 #
 Summary:	Mozilla Sunbird - standalone calendar application
 Summary(pl.UTF-8):	Mozilla Sunbird - samodzielny kalendarz
 Name:		mozilla-sunbird
 Version:	0.7
-Release:	0.5
+Release:	0.6
 License:	MPL/LGPL
 Group:		X11/Applications/Networking
 #Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/calendar/sunbird/releases/%{version}/source/lightning-sunbird-%{version}-source.tar.bz2
@@ -18,15 +28,15 @@ Source1:	%{name}.sh
 Source2:	%{name}.desktop
 Patch0:		mozilla-install.patch
 URL:		http://www.mozilla.org/projects/sunbird/
-BuildRequires:	GConf2-devel >= 1.2.1
+%{?with_gnomevfs:BuildRequires:	GConf2-devel >= 1.2.1}
 BuildRequires:	automake
 BuildRequires:	cairo-devel >= 1.2.0
 BuildRequires:	freetype-devel
-BuildRequires:	gnome-vfs2-devel >= 2.0
+%{?with_gnomevfs:BuildRequires:	gnome-vfs2-devel >= 2.0}
 BuildRequires:	gtk+2-devel >= 1:2.0.0
 BuildRequires:	libIDL-devel >= 0.8.0
-BuildRequires:	libgnome-devel >= 2.0
-BuildRequires:	libgnomeui-devel >= 2.2.0
+%{?with_gnomevfs:BuildRequires:	libgnome-devel >= 2.0}
+%{?with_gnomeui:BuildRequires:	libgnomeui-devel >= 2.2.0}
 BuildRequires:	libjpeg-devel >= 6b
 BuildRequires:	libpng-devel >= 1.2.7
 BuildRequires:	libstdc++-devel
@@ -73,6 +83,9 @@ cd mozilla
 %build
 cd mozilla
 cat << 'EOF' > .mozconfig
+mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/obj-%{_target_cpu}
+ac_cv_visibility_pragma=no
+
 # Options for 'configure' (same as command-line options).
 ac_add_options --prefix=%{_prefix}
 ac_add_options --exec-prefix=%{_exec_prefix}
@@ -88,12 +101,15 @@ ac_add_options --sharedstatedir=%{_sharedstatedir}
 ac_add_options --mandir=%{_mandir}
 ac_add_options --infodir=%{_infodir}
 %if %{?debug:1}0
+ac_add_options --disable-optimize
 ac_add_options --enable-debug
 ac_add_options --enable-debug-modules
-ac_add_options --disable-optimize
+ac_add_options --enable-debugger-info-modules
+ac_add_options --enable-crash-on-assert
 %else
 ac_add_options --disable-debug
 ac_add_options --disable-debug-modules
+ac_add_options --disable-logging
 ac_add_options --enable-optimize="%{rpmcflags}"
 %endif
 %if %{with tests}
@@ -101,34 +117,36 @@ ac_add_options --enable-tests
 %else
 ac_add_options --disable-tests
 %endif
-mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/obj-%{_target_cpu}
+%if %{with gnomeui}
+ac_add_options --enable-gnomeui
+%else
+ac_add_options --disable-gnomeui
+%endif
+%if %{with gnomevfs}
+ac_add_options --enable-gnomevfs
+%else
+ac_add_options --disable-gnomevfs
+%endif
 ac_add_options --disable-freetype2
-ac_add_options --disable-logging
+ac_add_options --disable-installer
+ac_add_options --disable-javaxpcom
 ac_add_options --disable-updater
 ac_add_options --disable-old-abi-compat-wrappers
 ac_add_options --enable-application=calendar
 ac_add_options --enable-default-toolkit=gtk2
-ac_add_options --enable-elf-dynstr-gc
-ac_add_options --enable-image-decoders=all
-ac_add_options --enable-image-encoders=all
 ac_add_options --enable-ipcd
 ac_add_options --enable-ldap-experimental
 ac_add_options --enable-native-uconv
-ac_add_options --enable-safe-browsing
 ac_add_options --enable-storage
 ac_add_options --enable-system-cairo
-ac_add_options --enable-url-classifier
 ac_add_options --enable-xft
-ac_add_options --with-default-mozilla-five-home=%{_libdir}/%{name}
 ac_add_options --with-distribution-id=org.pld-linux
-ac_add_options --with-java-bin-path=/usr/bin
-ac_add_options --with-java-include-path=/usr/include
-ac_add_options --with-qtdir=/usr
 ac_add_options --with-system-jpeg
 ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
 ac_add_options --with-system-png
 ac_add_options --with-system-zlib
+ac_add_options --with-default-mozilla-five-home=%{_libdir}/%{name}
 EOF
 
 %{__make} -j1 -f client.mk build \
