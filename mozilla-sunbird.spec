@@ -16,7 +16,7 @@ Summary:	Mozilla Sunbird - standalone calendar application
 Summary(pl.UTF-8):	Mozilla Sunbird - samodzielny kalendarz
 Name:		mozilla-sunbird
 Version:	0.7
-Release:	1
+Release:	2
 License:	MPL/LGPL
 Group:		X11/Applications/Networking
 #Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/calendar/sunbird/releases/%{version}/source/lightning-sunbird-%{version}-source.tar.bz2
@@ -221,6 +221,7 @@ exit 0
 %attr(755,root,root) %{_libdir}/%{name}/reg*
 %attr(755,root,root) %{_libdir}/%{name}/x*
 
+%dir %{_datadir}/%{name}
 %{_datadir}/%{name}/chrome
 %{_datadir}/%{name}/defaults
 %{_datadir}/%{name}/greprefs
