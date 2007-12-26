@@ -7,6 +7,5 @@ Icon=mozilla-sunbird
 Terminal=false
 Type=Application
 Categories=GTK;Network;Office;Calendar;
-Encoding=UTF-8
 MimeType=text/calendar;text/x-vcalendar;
 # vi: encoding=utf-8
