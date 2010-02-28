@@ -15,15 +15,17 @@
 Summary:	Mozilla Sunbird - standalone calendar application
 Summary(pl.UTF-8):	Mozilla Sunbird - samodzielny kalendarz
 Name:		mozilla-sunbird
-Version:	0.8
-Release:	3
+Version:	0.9
+Release:	1
 License:	MPL/LGPL
 Group:		X11/Applications/Networking
 Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/calendar/sunbird/releases/%{version}/source/lightning-sunbird-%{version}-source.tar.bz2
-# Source0-md5:	b432234e9a2b04710543df72ed88e383
+# Source0-md5:	7757ffefd4a30bcc1497b93b3dc6c0ce
 Source1:	%{name}.sh
 Source2:	%{name}.desktop
 Patch0:		mozilla-install.patch
+Patch1:		libpng14.patch
+Patch2:		elif.patch
 URL:		http://www.mozilla.org/projects/sunbird/
 %{?with_gnomevfs:BuildRequires:	GConf2-devel >= 1.2.1}
 BuildRequires:	automake
@@ -76,6 +78,8 @@ kalendarzem, oparta na języku interfejsu użytkownika XUL.
 %setup -q -c
 cd mozilla
 %patch0 -p1
+%patch1 -p2
+%patch2 -p1
 
 %build
 cd mozilla
@@ -232,9 +236,11 @@ exit 0
 %{_datadir}/%{name}/js
 %{_datadir}/%{name}/res
 %dir %{_datadir}/%{name}/extensions
+
 # the signature of the default theme
 %{_datadir}/%{name}/extensions/{972ce4c6-7e08-4474-a285-3208198ce6fd}
 %{_datadir}/%{name}/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}
+%{_datadir}/%{name}/extensions/calendar-timezones@mozilla.org
 
 %{_pixmapsdir}/%{name}.png
 %{_desktopdir}/%{name}.desktop
