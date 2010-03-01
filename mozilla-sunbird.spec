@@ -28,7 +28,6 @@ Patch1:		libpng14.patch
 Patch2:		elif.patch
 URL:		http://www.mozilla.org/projects/sunbird/
 %{?with_gnomevfs:BuildRequires:	GConf2-devel >= 1.2.1}
-BuildRequires:	automake
 BuildRequires:	cairo-devel >= 1.2.0
 BuildRequires:	freetype-devel
 %{?with_gnomevfs:BuildRequires:	gnome-vfs2-devel >= 2.0}
