@@ -85,7 +85,6 @@ cd mozilla
 cd mozilla
 cat << 'EOF' > .mozconfig
 mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/obj-%{_target_cpu}
-ac_cv_visibility_pragma=no
 
 # Options for 'configure' (same as command-line options).
 ac_add_options --prefix=%{_prefix}
@@ -111,8 +110,10 @@ ac_add_options --enable-crash-on-assert
 ac_add_options --disable-debug
 ac_add_options --disable-debug-modules
 ac_add_options --disable-logging
-ac_add_options --enable-optimize="%{rpmcflags}"
+ac_add_options --enable-optimize="%{rpmcflags} -Os"
 %endif
+ac_add_options --disable-strip
+ac_add_options --disable-strip-libs
 %if %{with tests}
 ac_add_options --enable-tests
 %else
@@ -128,25 +129,42 @@ ac_add_options --enable-gnomevfs
 %else
 ac_add_options --disable-gnomevfs
 %endif
-ac_add_options --disable-freetype2
+ac_add_options --disable-crashreporter
 ac_add_options --disable-installer
 ac_add_options --disable-javaxpcom
 ac_add_options --disable-updater
-ac_add_options --disable-old-abi-compat-wrappers
-ac_add_options --enable-application=calendar
 ac_add_options --enable-default-toolkit=gtk2
-ac_add_options --enable-ipcd
-ac_add_options --enable-ldap-experimental
-ac_add_options --enable-storage
+ac_add_options --disable-xprint
+ac_add_options --enable-canvas
+#ac_add_options --enable-libxul
+ac_add_options --enable-pango
+ac_add_options --enable-startup-notification
+ac_add_options --enable-svg
 ac_add_options --enable-system-cairo
-ac_add_options --enable-xft
+ac_add_options --enable-system-hunspell
+ac_add_options --enable-system-lcms
+ac_add_options --enable-system-sqlite
+#ac_add_options --enable-xft
+ac_add_options --enable-xinerama
 ac_add_options --with-distribution-id=org.pld-linux
+ac_add_options --with-pthreads
+ac_add_options --with-system-bz2
 ac_add_options --with-system-jpeg
 ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
 ac_add_options --with-system-png
 ac_add_options --with-system-zlib
 ac_add_options --with-default-mozilla-five-home=%{_libdir}/%{name}
+ac_add_options --disable-pedantic
+ac_add_options --disable-xterm-updates
+ac_add_options --enable-application=calendar
+ac_add_options --with-x
+ac_add_options --disable-freetype2
+ac_add_options --enable-ipcd
+ac_add_options --enable-ldap-experimental
+ac_add_options --enable-storage
+
+ac_cv_visibility_pragma=no
 EOF
 
 %{__make} -j1 -f client.mk build \
